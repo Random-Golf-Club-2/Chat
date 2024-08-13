@@ -115,6 +115,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
     var chatTitle: String?
     var paginationHandler: PaginationHandler?
     var showMessageTimeView = true
+    var showUsernames = false
     var messageFont = UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: 15))
     var availablelInput: AvailableInputType = .full
 
@@ -276,6 +277,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
                paginationHandler: paginationHandler,
                messageUseMarkdown: messageUseMarkdown,
                showMessageTimeView: showMessageTimeView,
+               showUsernames: showUsernames,
                messageFont: messageFont,
                sections: sections,
                ids: ids
@@ -373,7 +375,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View, MenuAction:
             leadingPadding: avatarSize + MessageView.horizontalAvatarPadding * 2,
             trailingPadding: MessageView.statusViewSize + MessageView.horizontalStatusPadding,
             onAction: menuActionClosure(row.message)) {
-                ChatMessageView(viewModel: viewModel, messageBuilder: messageBuilder, row: row, chatType: type, avatarSize: avatarSize, tapAvatarClosure: nil, messageUseMarkdown: messageUseMarkdown, isDisplayingMessageMenu: true, showMessageTimeView: showMessageTimeView, messageFont: messageFont)
+                ChatMessageView(viewModel: viewModel, messageBuilder: messageBuilder, row: row, chatType: type, avatarSize: avatarSize, tapAvatarClosure: nil, messageUseMarkdown: messageUseMarkdown, isDisplayingMessageMenu: true, showMessageTimeView: showMessageTimeView, showUsernames: showUsernames, messageFont: messageFont)
                     .onTapGesture {
                         hideMessageMenu()
                     }
@@ -559,6 +561,12 @@ public extension ChatView {
     func showMessageTimeView(_ isShow: Bool) -> ChatView {
         var view = self
         view.showMessageTimeView = isShow
+        return view
+    }
+    
+    func showUsernames(_ isShow: Bool) -> ChatView {
+        var view = self
+        view.showUsernames = isShow
         return view
     }
 

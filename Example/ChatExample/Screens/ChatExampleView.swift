@@ -25,6 +25,7 @@ struct ChatExampleView: View {
             viewModel.loadMoreMessage(before: message)
         }
         .messageUseMarkdown(messageUseMarkdown: true)
+        .showUsernames(true)
         .chatNavigation(
             title: viewModel.chatTitle,
             status: viewModel.chatStatus,

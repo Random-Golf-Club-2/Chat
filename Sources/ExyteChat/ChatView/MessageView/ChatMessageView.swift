@@ -22,6 +22,7 @@ struct ChatMessageView<MessageContent: View>: View {
     let messageUseMarkdown: Bool
     let isDisplayingMessageMenu: Bool
     let showMessageTimeView: Bool
+    let showUsernames: Bool
     let messageFont: UIFont
 
     var body: some View {
@@ -46,6 +47,7 @@ struct ChatMessageView<MessageContent: View>: View {
                     messageUseMarkdown: messageUseMarkdown,
                     isDisplayingMessageMenu: isDisplayingMessageMenu,
                     showMessageTimeView: showMessageTimeView,
+                    showUsernames: showUsernames,
                     font: messageFont)
             }
         }

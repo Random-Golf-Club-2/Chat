@@ -21,6 +21,7 @@ struct MessageView: View {
     let messageUseMarkdown: Bool
     let isDisplayingMessageMenu: Bool
     let showMessageTimeView: Bool
+    let showUsernames: Bool
 
     @State var avatarViewSize: CGSize = .zero
     @State var statusSize: CGSize = .zero
@@ -73,6 +74,12 @@ struct MessageView: View {
         || (chatType == .conversation && positionInUserGroup == .last)
         || (chatType == .comments && positionInUserGroup == .first)
     }
+    
+    var showName: Bool {
+        positionInUserGroup == .single
+        || (chatType == .conversation && positionInUserGroup == .first)
+        && chatType != .comments
+    }
 
     var topPadding: CGFloat {
         if chatType == .comments { return 0 }
@@ -101,6 +108,11 @@ struct MessageView: View {
                                 .frame(width: 2)
                         }
                 }
+                
+                if !message.user.isCurrentUser && showUsernames {
+                    usernameView
+                }
+                
                 bubbleView(message)
             }
 
@@ -120,6 +132,18 @@ struct MessageView: View {
         .frame(maxWidth: UIScreen.main.bounds.width, alignment: message.user.isCurrentUser ? .trailing : .leading)
     }
 
+    @ViewBuilder
+    var usernameView: some View {
+        Group {
+            if showName {
+                Text(message.user.name)
+                    .fontWeight(.medium)
+                    .padding(.bottom, 2)
+            }
+        }
+        .padding(.horizontal, MessageView.horizontalAvatarPadding)
+    }
+    
     @ViewBuilder
     func bubbleView(_ message: Message) -> some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -338,6 +362,7 @@ struct MessageView_Preview: PreviewProvider {
                 messageUseMarkdown: false,
                 isDisplayingMessageMenu: false,
                 showMessageTimeView: true,
+                showUsernames: true,
                 font: UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: 15))
             )
         }
