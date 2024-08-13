@@ -137,11 +137,13 @@ struct MessageView: View {
         Group {
             if showName {
                 Text(message.user.name)
-                    .fontWeight(.medium)
+                    .font(Font(font))
+                    .fontWeight(.semibold)
                     .padding(.bottom, 2)
+                    .padding(.top, 8)
             }
         }
-        .padding(.horizontal, MessageView.horizontalAvatarPadding)
+        .padding(.horizontal, MessageView.horizontalNoAvatarPadding)
     }
     
     @ViewBuilder
