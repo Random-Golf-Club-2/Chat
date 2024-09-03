@@ -1,13 +1,13 @@
 //
 //  MessageMenu.swift
-//  
+//
 //
 //  Created by Alisa Mylnikova on 20.03.2023.
 //
 
-import SwiftUI
 import FloatingButton
 import enum FloatingButton.Alignment
+import SwiftUI
 
 public protocol MessageMenuAction: Equatable, CaseIterable {
     func title() -> String
@@ -15,9 +15,8 @@ public protocol MessageMenuAction: Equatable, CaseIterable {
 }
 
 public enum DefaultMessageMenuAction: MessageMenuAction {
-
     case reply
-    case edit(saveClosure: (String)->Void)
+    case edit(saveClosure: (String) -> Void)
 
     public func title() -> String {
         switch self {
@@ -41,19 +40,22 @@ public enum DefaultMessageMenuAction: MessageMenuAction {
         if case .reply = lhs, case .reply = rhs {
             return true
         }
-        if case .edit(_) = lhs, case .edit(_) = rhs {
+        if case .edit = lhs, case .edit = rhs {
             return true
         }
         return false
     }
 
     public static var allCases: [DefaultMessageMenuAction] = [
-        .reply, .edit(saveClosure: {_ in})
+        .reply, .edit(saveClosure: { _ in }),
+    ]
+
+    public static var friendActions: [DefaultMessageMenuAction] = [
+        .reply,
     ]
 }
 
 struct MessageMenu<MainButton: View, ActionEnum: MessageMenuAction>: View {
-
     @Environment(\.chatTheme) private var theme
 
     @Binding var isShowingMenu: Bool
@@ -61,19 +63,33 @@ struct MessageMenu<MainButton: View, ActionEnum: MessageMenuAction>: View {
     var alignment: Alignment
     var leadingPadding: CGFloat
     var trailingPadding: CGFloat
-    var onAction: (ActionEnum) -> ()
+    var onAction: (ActionEnum) -> Void
     var mainButton: () -> MainButton
 
     var body: some View {
         FloatingButton(
             mainButtonView: mainButton().allowsHitTesting(false),
-            buttons: ActionEnum.allCases.map {
-                menuButton(title: $0.title(), icon: $0.icon(), action: $0)
-            },
+            buttons: {
+                if alignment == .left {
+                    guard let friendActions = DefaultMessageMenuAction.friendActions as? [ActionEnum] else {
+                        return ActionEnum.allCases.map {
+                            menuButton(title: $0.title(), icon: $0.icon(), action: $0)
+                        }
+                    }
+
+                    return friendActions.map {
+                        menuButton(title: $0.title(), icon: $0.icon(), action: $0)
+                    }
+                }
+
+                return ActionEnum.allCases.map {
+                    menuButton(title: $0.title(), icon: $0.icon(), action: $0)
+                }
+            }(),
             isOpen: $isShowingMenu
         )
         .straight()
-        //.mainZStackAlignment(.top)
+        // .mainZStackAlignment(.top)
         .initialOpacity(0)
         .direction(.bottom)
         .alignment(alignment)
