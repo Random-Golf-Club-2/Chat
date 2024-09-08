@@ -50,6 +50,8 @@ final class ChatViewModel: ObservableObject {
             inputViewModel?.text = message.text
             inputViewModel?.edit(saveClosure)
             globalFocusState?.focus = .uuid(inputFieldId)
+        case .delete:
+            break
         }
     }
 }

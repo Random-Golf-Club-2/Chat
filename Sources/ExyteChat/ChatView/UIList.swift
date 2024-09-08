@@ -368,17 +368,17 @@ struct UIList<MessageContent: View, InputView: View>: UIViewRepresentable {
     }
 
     class Coordinator: NSObject, UITableViewDataSource, UITableViewDelegate {
-
+        
         @ObservedObject var viewModel: ChatViewModel
         @ObservedObject var inputViewModel: InputViewModel
-
+        
         @Binding var isScrolledToBottom: Bool
         @Binding var isScrolledToTop: Bool
-
+        
         let messageBuilder: MessageBuilderClosure?
         let mainHeaderBuilder: (()->AnyView)?
         let headerBuilder: ((Date)->AnyView)?
-
+        
         let chatTheme: ChatTheme
         let type: ChatType
         let showDateHeaders: Bool
@@ -390,7 +390,13 @@ struct UIList<MessageContent: View, InputView: View>: UIViewRepresentable {
         let showMessageTimeView: Bool
         let showUsernames: Bool
         let messageFont: UIFont
-        var sections: [MessagesSection]
+        var sections: [MessagesSection] {
+            didSet {
+                if let lastSection = sections.last {
+                    paginationTargetIndexPath = IndexPath(row: lastSection.rows.count - 1, section: sections.count - 1)
+                }
+            }
+        }
         let ids: [String]
         let mainBackgroundColor: Color
 

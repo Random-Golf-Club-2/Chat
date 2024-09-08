@@ -17,6 +17,7 @@ public protocol MessageMenuAction: Equatable, CaseIterable {
 public enum DefaultMessageMenuAction: MessageMenuAction {
     case reply
     case edit(saveClosure: (String) -> Void)
+    case delete
 
     public func title() -> String {
         switch self {
@@ -24,6 +25,8 @@ public enum DefaultMessageMenuAction: MessageMenuAction {
             "Reply"
         case .edit:
             "Edit"
+        case .delete:
+            "Delete"
         }
     }
 
@@ -33,6 +36,8 @@ public enum DefaultMessageMenuAction: MessageMenuAction {
             Image(.reply)
         case .edit:
             Image(.edit)
+        case .delete:
+            Image(.delete)
         }
     }
 
@@ -40,14 +45,20 @@ public enum DefaultMessageMenuAction: MessageMenuAction {
         if case .reply = lhs, case .reply = rhs {
             return true
         }
+        
         if case .edit = lhs, case .edit = rhs {
             return true
         }
+        
+        if case .delete = lhs, case .delete = rhs {
+            return true
+        }
+        
         return false
     }
 
     public static var allCases: [DefaultMessageMenuAction] = [
-        .reply, .edit(saveClosure: { _ in }),
+        .reply, .edit(saveClosure: { _ in }), .delete,
     ]
 
     public static var friendActions: [DefaultMessageMenuAction] = [
@@ -91,7 +102,7 @@ struct MessageMenu<MainButton: View, ActionEnum: MessageMenuAction>: View {
         .straight()
         // .mainZStackAlignment(.top)
         .initialOpacity(0)
-        .direction(.bottom)
+        .direction(.top)
         .alignment(alignment)
         .spacing(2)
         .animation(.linear(duration: 0.2))
